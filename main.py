@@ -1,3 +1,5 @@
+from math import trunc
+
 class StoryTeller:
     def say(self, text):
         print(f"[ GAME ] : {text}")
@@ -31,7 +33,6 @@ class Dwarf:
 
     def getQuestion(self, index):
         for key in self.list_of_questions[index]:
-            print(key)
             return key
         
     def getAnsw(self, index):
@@ -54,8 +55,6 @@ class Dwarf:
             player.isAlive = False
             return player
 
-    
-
 class Spider:
     def __init__(self, name, quest, answ):
         self.name = name
@@ -72,8 +71,8 @@ class Spider:
         if player.isAlive == False:
             return player
         else:
-            answ = int(self.ask(self.quest))
-            if answ == self.answ:
+            u_answ = self.ask(self.quest, player.name)
+            if u_answ == self.answ:
                 self.say("Helyes válasz tovább mehetsz! És mostár vízed is van")
                 player.list_of_items.append("víz")
                 return player
@@ -81,18 +80,54 @@ class Spider:
             player.isAlive = False
             return player
 
+class Door:
+    def __init__(self, name):
+        self.name = name
+
+    def say(self, text):
+        print(f"[ Door {self.name} ] : {text}")
+
+    def ask(self, text, name):
+        return input(f"[ Door {self.name} ] : {text}\n[ {name} ]: ")
+    
+    def chAnsw(self, pw):
+        isValid = True
+        for i in range(trunc(len(pw)/2)):
+            if isValid:
+                if pw[i] != pw[-(i+1)]:
+                    isValid = False
+        return isValid
+
+    def play(self, player):
+        if player.isAlive == False:
+            return player
+        else:
+            while True:
+                answ = self.ask("Ráfogsz jönni??? vagy nem?", player.name)
+                if self.chAnsw(answ):
+                    self.say("Helyes válasz nessze itt egy halom kaccat!")
+                    player.list_of_items.append("gépfegyver")
+                    return player
+            
+
 def main():
+    #gen storyTeller
     game = StoryTeller()
-    
+    #gen player
     player = Character(game.ask("mi a neved?", "player"), [], 3, True)
-    
+    #Gen op
     dwarf0 = Dwarf("Erőske", [{"kerdes1?": "valasz1"}, {"kerdes2?": "valasz2"}, {"kerdes3?": "valasz3"}])
-    spider0 = Spider("Soklábú", "50+50", 100)
-
-
+    spider0 = Spider("Soklábú", "50+50", "100")
+    door0 = Door("Félős")
+    
+    #Game
     player = dwarf0.play(player)
-    player = spider0.play(player)
-
     player.stats()
+    player = spider0.play(player)
+    player.stats()
+    player = door0.play(player)
+    player.stats()
+
+    
 
 main()
