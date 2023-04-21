@@ -98,6 +98,32 @@ class Door:
                     isValid = False
         return isValid
 
+    def addToPlayerInv(self, ch, player):
+        first = self.matchIt(ch[0])
+        sec = self.matchIt(ch[-1])
+
+        player.list_of_items.append(first)
+        player.list_of_items.append(sec)
+        
+    def matchIt(w):
+        match w:
+            case "1":
+                return "gépfegyver"
+            case"2":
+                return "kés" 
+            case "3": 
+                return "gránát" 
+            case "4":
+                return "olló" 
+            case "5":
+                return "kanál"
+            case "6": 
+                return" futópad" 
+            case "7":
+                return" alma"
+
+
+
     def play(self, player):
         if player.isAlive == False:
             return player
@@ -105,8 +131,9 @@ class Door:
             while True:
                 answ = self.ask("Ráfogsz jönni??? vagy nem?", player.name)
                 if self.chAnsw(answ):
-                    self.say("Helyes válasz nessze itt egy halom kaccat!")
-                    player.list_of_items.append("gépfegyver")
+                    list_of_nick_nacks = ["1: gépfegyver", "2: kés", "3: gránát", "4: olló", "5: kanál", "6: futópad", "7: alma"]
+                    ch = self.ask(f"Helyes válasz nessze itt egy halom kaccat! #{list_of_nick_nacks}# (Válasz 2db ot, válaszodat igy formatáld: '1,2' ha a fegyvert és a kést szeretnéd)")
+                    player = self.addToPlayerInv(ch, player)
                     return player
             
 
@@ -114,7 +141,7 @@ def main():
     #gen storyTeller
     game = StoryTeller()
     #gen player
-    player = Character(game.ask("mi a neved?", "player"), [], 3, True)
+    player = Character(game.ask("mi a neved?", "player"), [], 4, True)
     #Gen op
     dwarf0 = Dwarf("Erőske", [{"kerdes1?": "valasz1"}, {"kerdes2?": "valasz2"}, {"kerdes3?": "valasz3"}])
     spider0 = Spider("Soklábú", "50+50", "100")
