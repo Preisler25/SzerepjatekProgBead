@@ -1,4 +1,5 @@
 from math import trunc
+import random
 
 class StoryTeller:
     def say(self, text):
@@ -136,6 +137,30 @@ class Door:
                     player = self.addToPlayerInv(ch, player)
                     return player
             
+class StringTrap:
+    def __init__(self, name):
+        self.name = name
+
+    def say(self, text):
+        print(f"[ StringTrap {self.name} ] : {text}")
+
+    def ask(self, text, name):
+        return input(f"[ StringTrap {self.name} ] : {text}\n[ {name} ]: ")
+    
+    def play(self, player):
+        random = random.randint(1, 6)
+        self.say(f"A szerencséd eldőlt! A dobás megtörtént és a te számod a {random}")
+        if random == 6:
+            self.say(f"Mivel 6 os dobtál tovább mehetsz! Mázlid volt")
+            return player
+        elif "kés" in player.list_of_items:
+            self.say(f"Mivel volt nálad kés igaz fent akadtál de kí tudtad magad vágni")
+            return player
+        else:
+            self.say("Szomorú véget ért kalandod! :D")
+            player.isAlive = False
+            return player
+        
 
 def main():
     #gen storyTeller
@@ -146,6 +171,7 @@ def main():
     dwarf0 = Dwarf("Erőske", [{"kerdes1?": "valasz1"}, {"kerdes2?": "valasz2"}, {"kerdes3?": "valasz3"}])
     spider0 = Spider("Soklábú", "50+50", "100")
     door0 = Door("Félős")
+    string_trap0 = StringTrap("Ragadós")
     
     #Game
     player = dwarf0.play(player)
@@ -153,6 +179,8 @@ def main():
     player = spider0.play(player)
     player.stats()
     player = door0.play(player)
+    player.stats()
+    player = string_trap0(player)
     player.stats()
 
     
